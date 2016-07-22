@@ -6,3 +6,7 @@
       apt: update_cache=yes
     - name: install nginx
       apt: name=nginx state=present
+    - name: Add Nginx HTTP to ufw rules
+      ufw: rule=allow name='Nginx HTTP'
+    - name: Reload ufw
+      ufw: state=reloaded
