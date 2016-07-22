@@ -1,0 +1,8 @@
+---
+- hosts: loadbalancer
+  remote_user: root
+  tasks:
+    - name: update apt
+      apt: update_cache=yes
+    - name: install nginx
+      apt: name=nginx state=present

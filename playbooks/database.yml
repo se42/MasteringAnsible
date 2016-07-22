@@ -1,0 +1,10 @@
+---
+- hosts: database
+  remote_user: root
+  tasks:
+    - name: update apt
+      apt: update_cache=yes
+    - name: install postgres
+      apt: name=postgresql state=present
+    - name: install postgresql-contrib
+      apt: name=postgresql-contrib state=present
