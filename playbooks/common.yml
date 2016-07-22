@@ -1,0 +1,17 @@
+---
+- hosts: control
+  remote_user: root
+  become: yes
+  tasks:
+    - name: Update apt packages
+      apt: update_cache=yes
+    - name: Upgrade packages
+      apt: upgrade=dist
+    - name: Configure ansible user
+      user: name=ansible append=yes groups=sudo generate_ssh_key=yes
+    - name: Set up ssh to remote ansible users
+      authorized_key: user=ansible key="{{ lookup('file', '/home/ansible/.ssh/id_rsa.pub') }}"
+    - name: Add ufw rule allow OpenSSH
+      ufw: rule=allow name=OpenSSH
+    - name: Enable ufw
+      ufw: state=enabled
