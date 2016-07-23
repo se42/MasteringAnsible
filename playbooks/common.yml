@@ -1,7 +1,7 @@
 ---
 - hosts: all
   remote_user: root
-  become: yes
+  become: yes # needed for access to control machine via local connection
   tasks:
     - name: Update apt packages
       apt: update_cache=yes

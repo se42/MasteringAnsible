@@ -1,0 +1,14 @@
+---
+- hosts: webserver
+  remote_user: root
+  tasks:
+    - name: Update apt
+      apt: update_cache=yes
+    - name: Install webserver components
+      apt: name={{item}} state=present
+      with_items:
+        - python3-pip
+        - python3-dev
+        - python3-venv
+    # - name: Configure ufw for Gunicorn WSGI server
+    # ufw: rule here to only allow https traffic from control ip
