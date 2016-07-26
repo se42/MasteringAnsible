@@ -4,5 +4,7 @@
   tasks:
     - name: Update apt
       apt: update_cache=yes
+    - name: Ensure Nginx is running
+      service: name=nginx state=started enabled=yes
     # - name: Configure ufw for Gunicorn WSGI server
     # ufw: rule here to only allow https traffic from control ip

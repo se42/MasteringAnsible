@@ -10,3 +10,5 @@
       ufw: rule=allow name='Nginx HTTP'
     - name: Reload ufw
       ufw: state=reloaded
+    - name: Ensure nginx started
+      service: name=nginx state=started enabled=yes
