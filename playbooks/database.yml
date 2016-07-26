@@ -3,10 +3,12 @@
   remote_user: root
   tasks:
     - name: Update apt
-      apt: update_cache=yes
+      apt: update_cache=yes cache_valid_time=43200
     - name: Install postgresql and postgresql-contrib
       apt: name={{item}} state=present
       with_items:
         - postgresql
         - postgresql-contrib
         - libpq-dev
+    - name: Ensure postgresql is running
+      service: name=postgresql state=started enabled=yes

@@ -3,8 +3,9 @@
   remote_user: root
   tasks:
     - name: Update apt
-      apt: update_cache=yes
-    - name: Ensure Nginx is running
-      service: name=nginx state=started enabled=yes
-    # - name: Configure ufw for Gunicorn WSGI server
-    # ufw: rule here to only allow https traffic from control ip
+      apt: update_cache=yes cache_valid_time=43200
+    # TODO - name: Configure ufw for Gunicorn WSGI server
+    #        ufw: rule here to only allow https traffic from control ip
+    # TODO - name: create venv for application resources
+    #              (do I have to use virtualenv for the Ansible django-manage module or can I use pyvenv?)
+    # TODO - name: pip install gunicorn into venv

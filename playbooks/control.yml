@@ -3,6 +3,6 @@
   become: true
   tasks:
     - name: Install tools
-      apt: name={{item}} state=present update_cache=yes
+      apt: name={{item}} state=present update_cache=yes cache_valid_time=43200
       with_items:
         - curl

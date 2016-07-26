@@ -4,7 +4,7 @@
   become: yes # needed for access to control machine via local connection
   tasks:
     - name: Update apt packages
-      apt: update_cache=yes
+      apt: update_cache=yes cache_valid_time=43200
     - name: Upgrade packages
       apt: upgrade=dist
     - name: Configure ansible user
