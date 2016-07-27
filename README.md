@@ -13,6 +13,7 @@ Repository used during completion of Mastering Ansible course on Udemy
   - apt-get install ansible
   - adduser ansible
   - usermod -aG sudo ansible
+  - visudo and append 'ansible ALL=(ALL) NOPASSWD: ALL'
   - su - ansible
     - mkdir .ssh/
     - chmod 700 .ssh
