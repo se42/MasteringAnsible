@@ -1,0 +1,30 @@
+---
+# Bring stack down in order
+- hosts: loadbalancer
+  become: yes
+  tasks:
+    - service: name=nginx state=stopped
+
+- hosts: webserver
+  become: yes
+  tasks:
+    - ping:
+    # - service: name=gunicorn state=stopped
+
+# Restart postgresql
+- hosts: database
+  become: yes
+  tasks:
+    - service: name=postgresql state=restarted
+
+# Bring stack back up in order
+- hosts: webserver
+  become: yes
+  tasks:
+    - ping:
+    # - service: name=gunicorn state=started
+
+- hosts: loadbalancer
+  become: yes
+  tasks:
+    - service: name=nginx state=started

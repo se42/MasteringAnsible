@@ -1,7 +1,7 @@
 ---
 - hosts: all
-  remote_user: root
-  become: yes # needed for access to control machine via local connection
+  remote_user: root # have to run as root to establish passwordless sudo for ansible user
+  become: yes # needed for sudo access to control machine via local connection
   tasks:
     - name: Update apt packages
       apt: update_cache=yes cache_valid_time=43200

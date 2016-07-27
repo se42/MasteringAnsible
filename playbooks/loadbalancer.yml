@@ -1,6 +1,6 @@
 ---
 - hosts: loadbalancer
-  remote_user: root
+  become: yes # play can only be run after common.yml establishes passwordless sudo for ansible user
   tasks:
     - name: update apt
       apt: update_cache=yes cache_valid_time=43200

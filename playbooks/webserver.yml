@@ -1,11 +1,33 @@
 ---
 - hosts: webserver
-  remote_user: root
+  become: yes # play can only be run after common.yml establishes passwordless sudo for ansible user
   tasks:
     - name: Update apt
       apt: update_cache=yes cache_valid_time=43200
-    # TODO - name: Configure ufw for Gunicorn WSGI server
-    #        ufw: rule here to only allow https traffic from control ip
-    # TODO - name: create venv for application resources
-    #              (do I have to use virtualenv for the Ansible django-manage module or can I use pyvenv?)
-    # TODO - name: pip install gunicorn into venv
+
+    - name: Install webserver components
+      apt: name={{item}} state=present
+      with_items:
+        - apache2
+        - libapache2-mod-wsgi
+
+    - name: Ensure apache2 service is running
+      service: name=apache2 state=started enabled=yes
+
+    - name: Configure ufw to allow Apache server
+      ufw: rule=allow name=Apache
+
+    - name: Reload ufw
+      ufw: state=reloaded # TODO - any way to only do this if needed?
+
+    - name: ensure mod_wsgi enabled
+      apache2_module: state=present name=wsgi
+      notify: restart apache2
+
+    - name: copy demo app source code
+      copy: src=demo/app/ dest=/var/www/demo mode=0755
+      notify: restart apache2
+
+  handlers:
+    - name: restart apache2
+      service: name=apache2 state=restarted
