@@ -49,7 +49,7 @@
         region_id: nyc1
         size_id: 512mb
         unique_name: yes
-        ssh_key_ids: "{{MA_CONTROL_ROOT_KEY}}"
+        ssh_key_ids: "{{MA_CONTROL_ROOT_KEY.id}}"
       register: drop_lb01
 
     - name: Create [loadbalancer] group in dev file
