@@ -60,7 +60,7 @@
         dest: /home/ansible/ansible/dev
         state: present
         regexp: '^lb01'
-        line: 'lb01 ansible_host={{drop_lb01.ip_address}}'
+        line: 'lb01 ansible_host={{drop_lb01.droplet.networks.v4[0].ip_address}}'
 
 # after all that you should be able to ssh root@new_lb01_ip FROM ansible@MA-CONTROL
 - hosts: loadbalancer
