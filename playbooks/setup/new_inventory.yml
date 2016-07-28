@@ -31,7 +31,7 @@
 
     - name: Ensure current MA-CONTROL-ROOT ssh key is in DigitalOcean
       vars:
-        contents: "{{ lookup('file', '/root/.ssh/id_rsa.pub') }}"
+        contents: "{{ lookup('file', '/home/ansible/.ssh/id_rsa.pub') }}"
       digital_ocean:
         command: ssh
         name: MA-CONTROL-ROOT
@@ -62,7 +62,7 @@
         regexp: '^lb01'
         line: 'lb01 ansible_host={{drop_lb01.ip_address}}'
 
-# after all that you should be able to ssh root@new_lb01_ip
+# after all that you should be able to ssh root@new_lb01_ip FROM ansible@MA-CONTROL
 - hosts: loadbalancer
   remote_user: root
   tasks:
