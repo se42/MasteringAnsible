@@ -68,10 +68,6 @@
 - hosts: loadbalancer
   remote_user: root
   tasks:
-    - name: Install python-simplejson # Ubuntu 16.04 ships without python2
-      raw: apt-get update
-    - name: Upgrade apt packages
-      raw: apt-get upgrade -y
     - name: Install python-simplejson (includes python2)
       raw: apt-get install -y python
     - name: ping the new lb01 host
