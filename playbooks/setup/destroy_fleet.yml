@@ -1,11 +1,14 @@
 ---
-- name: Delete droplet for each remote host
-  digital_ocean:
-    command: droplet
-    name: "{{item}}"
-    state: deleted
-  with_items:
-    - lb01
-    - db01
-    - app01
-    - app02
+- hosts: control
+  become: true
+  tasks:
+    name: Delete droplet for each remote host
+    digital_ocean:
+      command: droplet
+      name: "{{item}}"
+      state: deleted
+    with_items:
+      - lb01
+      - db01
+      - app01
+      - app02
