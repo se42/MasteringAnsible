@@ -73,7 +73,7 @@
     - name: Upgrade apt packages
       raw: apt-get upgrade -y
     - name: Install python-simplejson (includes python2)
-      raw: apt-get install python-simplejson -y
+      raw: apt-get install -y python
     - name: ping the new lb01 host
       ping:
 
