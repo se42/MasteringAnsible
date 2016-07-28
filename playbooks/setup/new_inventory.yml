@@ -92,23 +92,23 @@
     #     ssh_key_ids: "{{MA_CONTROL_ROOT_KEY.ssh_key.id}}"
     #   register: drop_app02
 
-      ### loopified creation of all hosts
-      - name: Create droplet for each remote host
-        digital_ocean:
-          command: droplet
-          name: {{item}}
-          state: present
-          image_id: ubuntu-16-04-x64
-          region_id: nyc1
-          size_id: 512mb
-          unique_name: yes
-          ssh_key_ids: "{{MA_CONTROL_ROOT_KEY.ssh_key.id}}"
-        register: drop_{{item}}
-        with_items:
-          - lb01
-          - db01
-          - app01
-          - app02
+    ### loopified creation of all hosts
+    - name: Create droplet for each remote host
+      digital_ocean:
+        command: droplet
+        name: {{item}}
+        state: present
+        image_id: ubuntu-16-04-x64
+        region_id: nyc1
+        size_id: 512mb
+        unique_name: yes
+        ssh_key_ids: "{{MA_CONTROL_ROOT_KEY.ssh_key.id}}"
+      register: drop_{{item}}
+      with_items:
+        - lb01
+        - db01
+        - app01
+        - app02
 
     ### use registered droplet variables to populate dev file
     - name: Create [loadbalancer] group in dev file
