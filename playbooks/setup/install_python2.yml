@@ -1,0 +1,14 @@
+---
+- hosts: '!control'
+  remote_user: root
+  gather_facts: false
+  tasks:
+    - name: Install python2
+      raw: apt-get install -y python
+
+- hosts: all
+  remote_user: root
+  become: true
+  tasks:
+    - name: ping all hosts
+      ping:

@@ -63,14 +63,5 @@
         line: 'lb01 ansible_host={{drop_lb01.droplet.networks.v4[0].ip_address}}'
 
 # after all that you should be able to ssh root@new_lb01_ip FROM ansible@MA-CONTROL
-# NOTICE: it technically works, but Ansible can't communicate because Ubuntu 16.04
-# comes with python3 and there is no /usr/bin/python executable
-- hosts: loadbalancer
-  remote_user: root
-  tasks:
-    - name: Install python-simplejson (includes python2)
-      raw: apt-get install -y python
-    - name: ping the new lb01 host
-      ping:
 
-    # now do those same steps again for the other 3 hosts
+# now do those same steps again for the other 3 hosts
