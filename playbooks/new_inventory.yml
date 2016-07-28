@@ -1,0 +1,72 @@
+---
+- hosts: control
+  become: true
+  tasks:
+    - name: Remove old dev file with old host IP info
+      file: path=/home/ansible/ansible/dev state=absent
+
+    - name: Create new empty dev file for new host IP info
+      file: path=/home/ansible/ansible/dev state=touch
+
+    - name: Create [control] group in dev file
+      lineinfile: dest=/home/ansible/ansible/dev state=present regexp='^\[control\]' line='[control]'
+
+    - name: Create control host entry
+      lineinfile: dest=/home/ansible/ansible/dev state=present regexp='^control' line='control ansible_connection=local'
+
+    - name: pip required to install dopy
+      apt: name=python-pip state=present update_cache=yes cache_valid_time=43200
+
+    - name: pip install dopy - required for DigitalOcean module
+      pip: name=dopy
+
+    - name: Ensure root@MA-CONTROL ssh key
+      user: name=root generate_ssh_key=yes
+
+    - name: Remove existing MA-CONTROL-ROOT ssh key from DigitalOcean
+      digital_ocean:
+        command: ssh
+        name: MA-CONTROL-ROOT
+        state: absent
+
+    - name: Ensure current MA-CONTROL-ROOT ssh key is in DigitalOcean
+      vars:
+        contents: "{{ lookup('file', '/root/.ssh/id_rsa.pub') }}"
+      digital_ocean:
+        command: ssh
+        name: MA-CONTROL-ROOT
+        state: present
+        ssh_pub_key: "{{contents}}"
+      register: MA_CONTROL_ROOT_KEY
+
+    # I bet this could be done in parallel using loops/conditionals instead of one by one?
+    - name: create loadbalancer
+      digital_ocean:
+        command: droplet
+        name: lb01
+        state: present
+        image_id: ubuntu-16-04-x64
+        region_id: nyc1
+        size_id: 512mb
+        unique_name: yes
+        ssh_key_ids: "{{MA_CONTROL_ROOT_KEY}}"
+      register: drop_lb01
+
+    - name: Create [loadbalancer] group in dev file
+      lineinfile: dest=/home/ansible/ansible/dev state=present regexp='^\[loadbalancer\]' line='[loadbalancer]'
+
+    - name: Create lb01 host entry
+      lineinfile:
+        dest: /home/ansible/ansible/dev
+        state: present
+        regexp: '^lb01'
+        line: 'lb01 ansible_host={{drop_lb01.ip_address}}'
+
+# after all that you should be able to ssh root@new_lb01_ip
+- hosts: loadbalancer
+  remote_user: root
+  tasks:
+    - name: ping the new lb01 host
+      ping:
+
+    # now do those same steps again for the other 3 hosts

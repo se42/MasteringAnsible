@@ -23,11 +23,12 @@ Repository used during completion of Mastering Ansible course on Udemy
   - nano /etc/ssh/sshd_config (TODO: PasswordAuthentication no)
   - systemctl reload sshd
   - test ssh login from local machine to ansible@ip
+  - nano /etc/environment --> DO_API_TOKEN=token_from_digitalocean
   - exit
 
 1. as ansible:
   - mkdir ansible
   - cd ansible
   - git clone https://github.com/se42/MasteringAnsible.git .
-  - TODO: develop playbook for further configuration of MA-CONTROL
-  - TODO: develop playbook for creation of MA-<fleet> droplets with DO module (dynamic inventory?)
+  - ansible-playbook playbooks/setup/new_inventory.yml # updates dev file with new IP information
+  - ansible-playbook playbooks/setup/initial_setup.yml # initial configuration of all hosts; should run host-specific playbooks as well

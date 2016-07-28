@@ -1,4 +1,7 @@
 ---
+
+# NOTICE:  PLAYBOOK MUST BE RUN AFTER INVENTORY IS UPDATED WITH new_inventory.yml
+
 - hosts: control
   become: true
   tasks:
@@ -7,28 +10,8 @@
       with_items:
         - curl
 
-    - name: Remove old dev file with old host IP info
-      file: path=/home/ansible/ansible/dev state=absent
-
-    - name: Create new empty dev file for new host IP info
-      file: path=/home/ansible/ansible/dev state=touch
-
-    - name: Create [control] group in dev file
-      lineinfile: dest=/home/ansible/ansible/dev state=present regexp='^\[control\]' line='[control]'
-
-    - name: Create control host entry
-      lineinfile: dest=/home/ansible/ansible/dev state=present regexp='^control' line='control ansible_connection=local'
-
-    - name: Generate new MA-CONTROL ssh key
+    - name: Ensure ansible@MA-CONTROL ssh key
       user: name=ansible generate_ssh_key=yes
-
-    # - name: Create fleet of droplets
-      # PROBLEM: TURNS OUT ANSIBLE LOADS THE OLD INVENTORY FIRST SO THE WAY YOU'RE CHANGING THE DEV FILE IS AN ISSUE
-
-      # FOR TONIGHT I'M GOING TO COMMENT OUT EVERYTHING BELOW HERE AS IT WILL TRY TO RUN AGAINST THE OLD CONTROL HOST
-
-      # SOLUTION: SPLIT THIS MEGA-PLAY INTO A SEQUENCE OF PLAYBOOKS, BUILDING THE NEW INVENTORY AS IT IS AVAILABLE
-                  AND THEN LOADING THE EXPANDED INVENTORY INTO THE NEXT INDEPENDENT PLAYBOOK
 
 #- hosts: '!control'
 #  remote_user: root
