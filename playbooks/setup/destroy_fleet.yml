@@ -5,10 +5,10 @@
     - name: Delete droplet for each remote host
       digital_ocean:
         command: droplet
-        name: "{{item}}"
+        id: "{{item}}"
         state: deleted
       with_items:
-        - lb01
-        - db01
-        - app01
-        - app02
+        - 20855359 # lb01
+        - 20855447 # db01
+        - 20855531 # app01
+        - 20855670 # app02
