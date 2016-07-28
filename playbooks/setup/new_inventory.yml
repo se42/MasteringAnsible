@@ -103,7 +103,7 @@
         size_id: 512mb
         unique_name: yes
         ssh_key_ids: "{{MA_CONTROL_ROOT_KEY.ssh_key.id}}"
-      register: drop_{{item}}
+      register: droplets
       with_items:
         - lb01
         - db01
@@ -119,7 +119,7 @@
         dest: /home/ansible/ansible/dev
         state: present
         regexp: '^lb01'
-        line: 'lb01 ansible_host={{drop_lb01.droplet.networks.v4[0].ip_address}}'
+        line: 'lb01 ansible_host={{droplets[0].droplet.networks.v4[0].ip_address}}'
 
     - name: Create [database] group in dev file
       lineinfile: dest=/home/ansible/ansible/dev state=present regexp='^\[database\]' line='[database]'
@@ -129,7 +129,7 @@
         dest: /home/ansible/ansible/dev
         state: present
         regexp: '^db01'
-        line: 'db01 ansible_host={{drop_db01.droplet.networks.v4[0].ip_address}}'
+        line: 'db01 ansible_host={{droplets[1].droplet.networks.v4[0].ip_address}}'
 
     - name: Create [webserver] group in dev file
       lineinfile: dest=/home/ansible/ansible/dev state=present regexp='^\[webserver\]' line='[webserver]'
@@ -139,14 +139,14 @@
         dest: /home/ansible/ansible/dev
         state: present
         regexp: '^app01'
-        line: 'app01 ansible_host={{drop_app01.droplet.networks.v4[0].ip_address}}'
+        line: 'app01 ansible_host={{droplets[2].droplet.networks.v4[0].ip_address}}'
 
     - name: Create app02 host entry
       lineinfile:
         dest: /home/ansible/ansible/dev
         state: present
         regexp: '^app02'
-        line: 'app02 ansible_host={{drop_app02.droplet.networks.v4[0].ip_address}}'
+        line: 'app02 ansible_host={{droplets[3].droplet.networks.v4[0].ip_address}}'
 
 
 # after all that you should be able to ssh root@fleet_host_ip from ansible@MA-CONTROL
