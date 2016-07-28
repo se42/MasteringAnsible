@@ -8,7 +8,10 @@
         id: "{{item}}"
         state: deleted
       with_items:
-        - 20855359 # lb01
-        - 20855447 # db01
-        - 20855531 # app01
-        - 20855670 # app02
+        - 20855359 # lb01 when I wrote this
+        - 20855447 # db01 when I wrote this
+        - 20855531 # app01 when I wrote this
+        - 20855670 # app02 when I wrote this
+
+# NOTICE:  I had to manually enter the droplet IDs, but it doesn't work with name.
+#   Need a way to automatically get the droplet IDs.
