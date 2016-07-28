@@ -111,6 +111,7 @@
         - app02
 
     ### use registered droplet variables to populate dev file
+    ### better way might be dynamic inventory features
     - name: Create [loadbalancer] group in dev file
       lineinfile: dest=/home/ansible/ansible/dev state=present regexp='^\[loadbalancer\]' line='[loadbalancer]'
 
@@ -119,7 +120,7 @@
         dest: /home/ansible/ansible/dev
         state: present
         regexp: '^lb01'
-        line: 'lb01 ansible_host={{droplets[0].droplet.networks.v4[0].ip_address}}'
+        line: 'lb01 ansible_host={{droplets.results[0].droplet.networks.v4[0].ip_address}}'
 
     - name: Create [database] group in dev file
       lineinfile: dest=/home/ansible/ansible/dev state=present regexp='^\[database\]' line='[database]'
@@ -129,7 +130,7 @@
         dest: /home/ansible/ansible/dev
         state: present
         regexp: '^db01'
-        line: 'db01 ansible_host={{droplets[1].droplet.networks.v4[0].ip_address}}'
+        line: 'db01 ansible_host={{droplets.results[1].droplet.networks.v4[0].ip_address}}'
 
     - name: Create [webserver] group in dev file
       lineinfile: dest=/home/ansible/ansible/dev state=present regexp='^\[webserver\]' line='[webserver]'
@@ -139,14 +140,14 @@
         dest: /home/ansible/ansible/dev
         state: present
         regexp: '^app01'
-        line: 'app01 ansible_host={{droplets[2].droplet.networks.v4[0].ip_address}}'
+        line: 'app01 ansible_host={{droplets.results[2].droplet.networks.v4[0].ip_address}}'
 
     - name: Create app02 host entry
       lineinfile:
         dest: /home/ansible/ansible/dev
         state: present
         regexp: '^app02'
-        line: 'app02 ansible_host={{droplets[3].droplet.networks.v4[0].ip_address}}'
+        line: 'app02 ansible_host={{droplets.results[3].droplet.networks.v4[0].ip_address}}'
 
 
 # after all that you should be able to ssh root@fleet_host_ip from ansible@MA-CONTROL
