@@ -8,10 +8,10 @@
         - curl
 
     - name: Remove old dev file with old host IP info
-      command: rm /home/ansible/ansible/dev
+      file: path=/home/ansible/ansible/dev state=absent
 
     - name: Create new empty dev file for new host IP info
-      command: touch /home/ansible/ansible/dev
+      file: path=/home/ansible/ansible/dev state=touch
 
     - name: Create [control] group in dev file
       lineinfile: dest=/home/ansible/ansible/dev state=present regexp='^\[control\]' line='[control]'
@@ -22,58 +22,61 @@
     - name: Generate new MA-CONTROL ssh key
       user: name=ansible generate_ssh_key=yes
 
-    - name: Create fleet of droplets
-      ping: # be sure to include that new MA-CONTROL ssh key when you make them
-            # need to figure out how to either lineinfile write these to dev or use dynamic inventory
+    # - name: Create fleet of droplets
+      # PROBLEM: TURNS OUT ANSIBLE LOADS THE OLD INVENTORY FIRST SO THE WAY YOU'RE CHANGING THE DEV FILE IS AN ISSUE
+
+      # FOR TONIGHT I'M GOING TO COMMENT OUT EVERYTHING BELOW HERE AS IT WILL TRY TO RUN AGAINST THE OLD CONTROL HOST
+
+      # SOLUTION: SPLIT THIS MEGA-PLAY INTO A SEQUENCE OF PLAYBOOKS, BUILDING THE NEW INVENTORY AS IT IS AVAILABLE
+                  AND THEN LOADING THE EXPANDED INVENTORY INTO THE NEXT INDEPENDENT PLAYBOOK
+
+#- hosts: '!control'
+#  remote_user: root
+#  tasks:
+#    - name: Create ansible user on remote hosts
+#      user: name=ansible append=yes groups=sudo
+#
+#    - name: Set up ssh to remote ansible users
+#      authorized_key: user=ansible key="{{ lookup('file', '/home/ansible/.ssh/id_rsa.pub') }}"
+#
+#    - name: Configure passwordless sudo for remote ansible users
+#      lineinfile: "dest=/etc/sudoers state=present regexp='^ansible' line='ansible ALL=(ALL) NOPASSWD: ALL'"
 
 
-- hosts: '!control'
-  remote_user: root
-  tasks:
-    - name: Create ansible user on remote hosts
-      user: name=ansible append=yes groups=sudo
-
-    - name: Set up ssh to remote ansible users
-      authorized_key: user=ansible key="{{ lookup('file', '/home/ansible/.ssh/id_rsa.pub') }}"
-
-    - name: Configure passwordless sudo for remote ansible users
-      lineinfile: "dest=/etc/sudoers state=present regexp='^ansible' line='ansible ALL=(ALL) NOPASSWD: ALL'"
-
-
-- hosts: all
-  become: true
-  remote_user: root
-  tasks:
-    - name: ufw allow OpenSSH
-      ufw: rule=allow name=OpenSSH
-
-    - name: ufw enable
-      ufw: state=enabled
-
-    - name: ufw reloaded
-      ufw: state=reloaded
-
-    - name: Update apt packages
-      apt: update_cache=yes cache_valid_time=43200
-
-    - name: Upgrade apt packages
-      apt: upgrade=dist
-
-    - name: Install Python3 tools
-      apt: name={{item}} state=present
-      with_items:
-        - python3-dev
-        - python3-pip
-        - python3-venv
+#- hosts: all
+#  become: true
+#  remote_user: root
+#  tasks:
+#    - name: ufw allow OpenSSH
+#      ufw: rule=allow name=OpenSSH
+#
+#    - name: ufw enable
+#      ufw: state=enabled
+#
+#    - name: ufw reloaded
+#      ufw: state=reloaded
+#
+#    - name: Update apt packages
+#      apt: update_cache=yes cache_valid_time=43200
+#
+#    - name: Upgrade apt packages
+#      apt: upgrade=dist
+#
+#    - name: Install Python3 tools
+#      apt: name={{item}} state=present
+#      with_items:
+#        - python3-dev
+#        - python3-pip
+#        - python3-venv
 
 
 # Can I run group-specific playbooks from here so I can have independent
 # playbooks but have them run automatically on initial_setup?
 
 
-- hosts: all
-  become: true
-  remote_user: root
-  tasks:
-    name: Restart all servers
-    command: /sbin/shutdown -r +1
+#- hosts: all
+#  become: true
+#  remote_user: root
+#  tasks:
+#    - name: Restart all servers
+#      command: /sbin/shutdown -r +1
