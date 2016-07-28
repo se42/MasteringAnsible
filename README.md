@@ -31,4 +31,5 @@ Repository used during completion of Mastering Ansible course on Udemy
   - cd ansible
   - git clone https://github.com/se42/MasteringAnsible.git .
   - ansible-playbook playbooks/setup/new_inventory.yml # updates dev file with new IP information
+  - ansible-playbook playbooks/setup/install_python2.yml # install python2 on all remote servers (Ubuntu 16.04 ships without python2)
   - ansible-playbook playbooks/setup/initial_setup.yml # initial configuration of all hosts; should run host-specific playbooks as well
